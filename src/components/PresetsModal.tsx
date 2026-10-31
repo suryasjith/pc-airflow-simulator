@@ -1,6 +1,6 @@
 import React from 'react';
 import { PresetBuild } from '../types';
-import { Sparkles, X, RotateCcw } from 'lucide-react';
+import { X, RotateCcw, Compass } from 'lucide-react';
 
 interface PresetsModalProps {
   isOpen: boolean;
@@ -95,32 +95,34 @@ export const PresetsModal: React.FC<PresetsModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-100">
+      <div className="bg-[#0b0d13] border border-zinc-700 max-w-2xl w-full p-6 hard-shadow relative">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-3 border-b border-zinc-800 mb-4">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-cyan-500/10 border border-cyan-500/30 rounded-xl text-cyan-400">
-              <Sparkles className="w-5 h-5" />
+            <div className="p-1.5 bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff]">
+              <Compass className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-100 text-base">
-                Curated Presets & Aerodynamic Case Studies
+              <h3 className="font-mono font-bold text-white text-sm uppercase tracking-wider">
+                Benchmark Presets & Thermal Case Studies
               </h3>
-              <p className="text-xs text-slate-400">
-                Load granular configurations to test Short-Looping, GPU Starvation, or Optimal Positive Pressure.
+              <p className="text-xs text-zinc-400 font-mono">
+                Load empirical scenarios to test Short-Looping, GPU Starvation, or Optimal Positive Pressure.
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors"
+            className="p-1 text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors btn-tactile"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="space-y-3 mb-6 max-h-[60vh] overflow-y-auto pr-1">
+        {/* Preset Cards List */}
+        <div className="space-y-2.5 mb-5 max-h-[60vh] overflow-y-auto pr-1">
           {PRESET_STUDIES.map((preset) => {
             const isConflict =
               preset.badge.includes('Hazard') ||
@@ -134,27 +136,27 @@ export const PresetsModal: React.FC<PresetsModalProps> = ({
                   onLoadPreset(preset);
                   onClose();
                 }}
-                className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                className={`p-3.5 border cursor-pointer transition-all hard-shadow-sm btn-tactile ${
                   isConflict
-                    ? 'bg-slate-950/70 border-red-900/40 hover:border-red-500/60 hover:bg-red-950/20'
-                    : 'bg-slate-950/70 border-slate-800 hover:border-cyan-500/60 hover:bg-cyan-950/20'
+                    ? 'bg-[#180a0a] border-red-500/50 hover:border-red-400'
+                    : 'bg-[#0a1219] border-[#00f0ff]/40 hover:border-[#00f0ff]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
-                  <h4 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
+                  <h4 className="text-xs font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
                     {preset.name}
                   </h4>
                   <span
-                    className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
+                    className={`text-[9px] font-mono font-bold px-1.5 py-0.2 border uppercase ${
                       isConflict
-                        ? 'bg-red-950 text-red-400 border-red-800'
-                        : 'bg-cyan-950 text-cyan-300 border-cyan-800'
+                        ? 'bg-red-500 text-black border-red-500'
+                        : 'bg-[#00f0ff] text-black border-[#00f0ff]'
                     }`}
                   >
                     {preset.badge}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-zinc-400 font-mono leading-relaxed">
                   {preset.description}
                 </p>
               </div>
@@ -163,23 +165,23 @@ export const PresetsModal: React.FC<PresetsModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-slate-800">
+        <div className="flex items-center justify-between pt-3 border-t border-zinc-800">
           <button
             onClick={() => {
               onResetBlankSlate();
               onClose();
             }}
-            className="px-4 py-2 text-xs font-mono text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 flex items-center gap-2 transition-colors"
+            className="px-3 py-1.5 text-xs font-mono text-zinc-300 hover:text-white bg-black hover:bg-zinc-900 border border-zinc-700 flex items-center gap-2 transition-colors btn-tactile"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-cyan-400" />
-            Reset to Fresh Blank Slate
+            <RotateCcw className="w-3.5 h-3.5 text-[#00f0ff]" />
+            <span>RESET TO FRESH BLANK SLATE</span>
           </button>
 
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-mono bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold rounded-lg transition-colors"
+            className="px-4 py-1.5 text-xs font-mono bg-[#00f0ff] hover:bg-[#00f0ff]/90 text-black font-bold border border-[#00f0ff] transition-colors btn-tactile"
           >
-            Done
+            DISMISS
           </button>
         </div>
       </div>

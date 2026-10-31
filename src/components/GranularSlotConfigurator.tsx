@@ -9,9 +9,6 @@ import {
 } from '../types';
 import {
   Sliders,
-  Layers,
-  Flame,
-  Snowflake,
   Power,
 } from 'lucide-react';
 
@@ -34,10 +31,8 @@ interface GranularSlotConfiguratorProps {
 export const GranularSlotConfigurator: React.FC<GranularSlotConfiguratorProps> = ({
   selectedCase,
   defaultFan,
-  fans,
   physics,
   onToggleSlotOccupied,
-  onSetSlotFan,
   onToggleSlotDirection,
   onSetSlotPwm,
   onToggleSlotRadiator,
@@ -84,50 +79,53 @@ export const GranularSlotConfigurator: React.FC<GranularSlotConfiguratorProps> =
 
   if (!selectedCase) {
     return (
-      <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
-        <div className="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 mx-auto flex items-center justify-center text-slate-400 mb-3">
-          <Sliders className="w-6 h-6" />
+      <div className="bg-[#0b0d13] border border-zinc-800 p-8 hard-shadow text-center">
+        <div className="w-12 h-12 bg-black border border-zinc-700 mx-auto flex items-center justify-center text-zinc-500 mb-3">
+          <Sliders className="w-6 h-6 text-[#00f0ff]" />
         </div>
-        <h3 className="text-base font-semibold text-slate-100 mb-1">
-          Select a PC Chassis in Step 1
+        <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-white mb-1">
+          [ HARDWARE CHASSIS UNINITIALIZED ]
         </h3>
-        <p className="text-xs text-slate-400 max-w-md mx-auto">
-          Chassis selection determines available granular slots across Front, Side, Top, Rear, and Bottom panels.
+        <p className="text-xs text-zinc-400 font-mono max-w-md mx-auto">
+          Select a chassis in the Hardware Matrix to configure physical granular slots across Front, Side, Top, Rear, and Bottom arrays.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-2xl">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3 mb-5">
+    <div className="bg-[#0b0d13] border border-zinc-800 p-5 hard-shadow">
+      {/* Console Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3 mb-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="p-1.5 bg-cyan-500/10 border border-cyan-500/30 rounded-lg text-cyan-400">
+          <div className="flex items-center gap-2.5">
+            <span className="p-1.5 bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff]">
               <Sliders className="w-4 h-4" />
             </span>
-            <h2 className="text-base font-semibold text-slate-100">
-              Granular Fan Slots & Side Mount Matrix
-            </h2>
-            <span className="text-[10px] font-mono bg-cyan-950 text-cyan-300 border border-cyan-800 px-2 py-0.5 rounded">
-              Discrete Slot Control
-            </span>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-white">
+                Granular Fan Slots & Side Mount Matrix
+              </h2>
+              <span className="text-[10px] font-mono bg-black text-[#00f0ff] border border-zinc-800 px-2 py-0.5">
+                DISCRETE PWM CONTROL
+              </span>
+            </div>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Configure independent Intake/Exhaust, 0–100% PWM sliders, and AIO static pressure impedance (–40% CFM) per slot.
+          <p className="text-xs text-zinc-400 font-mono mt-1">
+            Independent Intake/Exhaust rockers, 0–100% PWM potentiometer sliders, and AIO static pressure impedance (–40% CFM).
           </p>
         </div>
 
         {defaultFan && (
-          <div className="text-xs font-mono text-slate-400 flex items-center gap-1.5 bg-slate-950/70 border border-slate-800 px-3 py-1.5 rounded-lg">
-            <span className="text-slate-500">Default Model:</span>
-            <span className="text-cyan-300 font-semibold">{defaultFan.name.slice(0, 22)} ({defaultFan.maxCfm} CFM)</span>
+          <div className="text-xs font-mono text-zinc-400 flex items-center gap-2 bg-black border border-zinc-800 px-3 py-1.5">
+            <span className="text-zinc-500">GLOBAL FAN SPEC:</span>
+            <span className="text-[#00f0ff] font-bold">{defaultFan.name.slice(0, 20)} ({defaultFan.maxCfm} CFM)</span>
           </div>
         )}
       </div>
 
-      {/* Panels Layout: 5 Panels (Front, Side, Top, Rear, Bottom) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+      {/* Panels Layout: 5 Structural Racks */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
         {panelConfigs.map((panel) => {
           const breakdown = physics.panelBreakdown[panel.id];
           const panelSlots = breakdown.slots;
@@ -137,179 +135,166 @@ export const GranularSlotConfigurator: React.FC<GranularSlotConfiguratorProps> =
           return (
             <div
               key={panel.id}
-              className={`rounded-xl border p-4 flex flex-col justify-between transition-all ${
+              className={`border p-3 flex flex-col justify-between transition-all ${
                 panelSlots.some((s) => s.isOccupied && s.pwmPercent > 0)
-                  ? 'bg-slate-950/90 border-slate-700 shadow-lg'
-                  : 'bg-slate-950/40 border-slate-800/80'
+                  ? 'bg-[#0e1017] border-zinc-700 hard-shadow-sm'
+                  : 'bg-[#08090d] border-zinc-900 opacity-90'
               }`}
             >
               <div>
-                {/* Panel Header */}
-                <div className="flex items-center justify-between pb-2 border-b border-slate-800 mb-3">
+                {/* Panel Rack Header */}
+                <div className="flex items-center justify-between pb-2 border-b border-zinc-800 mb-2.5">
                   <div>
-                    <h3 className="text-xs font-mono font-bold tracking-wide text-slate-100 uppercase flex items-center gap-1.5">
-                      <span className={`w-2 h-2 rounded-full ${
+                    <h3 className="text-xs font-mono font-bold tracking-wider text-white uppercase flex items-center gap-1.5">
+                      <span className={`w-1.5 h-1.5 ${
                         panelSlots.some((s) => s.isOccupied && s.pwmPercent > 0)
-                          ? 'bg-cyan-400 animate-pulse'
-                          : 'bg-slate-700'
+                          ? 'bg-[#00f0ff]'
+                          : 'bg-zinc-700'
                       }`} />
                       {panel.name}
                     </h3>
-                    <p className="text-[10px] text-slate-400 mt-0.5">
-                      Max: {maxSupportedSlots > 0 ? `${maxSupportedSlots}x Slots` : 'Not supported'}
+                    <p className="text-[10px] font-mono text-zinc-500 mt-0.5">
+                      CAPACITY: {maxSupportedSlots > 0 ? `${maxSupportedSlots}x SLOTS` : 'NONE'}
                     </p>
                   </div>
 
                   {/* Panel Net CFM Badge */}
                   <div className="text-right font-mono text-[11px]">
                     {breakdown.intakeCfm > 0 && (
-                      <span className="text-cyan-400 font-semibold block">
+                      <span className="text-[#00f0ff] font-bold block">
                         +{breakdown.intakeCfm} CFM
                       </span>
                     )}
                     {breakdown.exhaustCfm > 0 && (
-                      <span className="text-red-400 font-semibold block">
+                      <span className="text-red-400 font-bold block">
                         -{breakdown.exhaustCfm} CFM
                       </span>
                     )}
                     {breakdown.intakeCfm === 0 && breakdown.exhaustCfm === 0 && (
-                      <span className="text-slate-500">0.0 CFM</span>
+                      <span className="text-zinc-600">0.0 CFM</span>
                     )}
                   </div>
                 </div>
 
                 {/* Quick Panel Sync Controls */}
                 {maxSupportedSlots > 0 && (
-                  <div className="flex items-center justify-between gap-1 mb-3 text-[10px] font-mono">
-                    <span className="text-slate-400">Sync:</span>
+                  <div className="flex items-center justify-between gap-1 mb-2.5 text-[9px] font-mono">
+                    <span className="text-zinc-500">SYNC:</span>
                     <div className="flex items-center gap-1">
                       <button
                         type="button"
                         onClick={() => onSyncPanelDirection(panel.id, 'intake')}
-                        className="px-1.5 py-0.5 bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-800/60 text-cyan-300 rounded"
+                        className="px-1.5 py-0.5 bg-[#002b36] hover:bg-[#00f0ff] hover:text-black border border-[#00f0ff]/50 text-[#00f0ff] btn-tactile font-semibold uppercase"
                       >
-                        All In
+                        ALL IN
                       </button>
                       <button
                         type="button"
                         onClick={() => onSyncPanelDirection(panel.id, 'exhaust')}
-                        className="px-1.5 py-0.5 bg-red-950/80 hover:bg-red-900 border border-red-800/60 text-red-300 rounded"
+                        className="px-1.5 py-0.5 bg-[#3b0808] hover:bg-red-500 hover:text-black border border-red-500/50 text-red-300 btn-tactile font-semibold uppercase"
                       >
-                        All Out
+                        ALL OUT
                       </button>
                       <button
                         type="button"
                         onClick={() => onApplyDefaultFanToPanel(panel.id)}
-                        className="px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 rounded"
-                        title="Fill all slots with default fan model"
+                        className="px-1.5 py-0.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 btn-tactile font-semibold uppercase"
+                        title="Apply default fan model to this panel"
                       >
-                        Fill
+                        RESET FAN
                       </button>
                     </div>
                   </div>
                 )}
 
-                {/* Granular Individual Discrete Slots */}
-                {maxSupportedSlots > 0 ? (
-                  <div className="space-y-3">
-                    {panelSlots.map((slot) => {
+                {/* Individual Discrete Slots List */}
+                <div className="space-y-2">
+                  {panelSlots.length > 0 ? (
+                    panelSlots.map((slot) => {
                       const isIntake = slot.direction === 'intake';
-                      const isExhaust = slot.direction === 'exhaust';
 
                       return (
                         <div
                           key={slot.id}
-                          className={`rounded-lg border p-2.5 transition-all ${
+                          className={`p-2.5 border transition-all ${
                             slot.isOccupied
                               ? isIntake
-                                ? 'bg-cyan-950/20 border-cyan-500/40 shadow-xs'
-                                : 'bg-red-950/20 border-red-500/40 shadow-xs'
-                              : 'bg-slate-900/40 border-slate-800/80 opacity-70 hover:opacity-100'
+                                ? 'bg-[#07131b] border-[#00f0ff]/40 shadow-[1px_1px_0px_#000]'
+                                : 'bg-[#1a0a0a] border-red-500/40 shadow-[1px_1px_0px_#000]'
+                              : 'bg-black border-zinc-800/80 opacity-60'
                           }`}
                         >
-                          {/* Slot Header: ID & Occupied Toggle */}
+                          {/* Slot Header: ID + Power Toggle */}
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-[11px] font-mono font-semibold text-slate-300 flex items-center gap-1">
-                              <span>Slot {slot.slotNumber}</span>
-                              {slot.hasRadiator && (
-                                <span className="text-[9px] bg-purple-950 border border-purple-500/50 text-purple-300 px-1 py-0.2 rounded">
-                                  RAD
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[10px] font-mono font-bold text-zinc-300 uppercase">
+                                SLOT [{slot.slotNumber.toString().padStart(2, '0')}]
+                              </span>
+                              {slot.isOccupied && (
+                                <span className={`text-[9px] font-mono px-1 py-0.2 border uppercase ${
+                                  isIntake
+                                    ? 'bg-[#002b36] text-[#00f0ff] border-[#00f0ff]/50'
+                                    : 'bg-[#3b0808] text-red-300 border-red-500/50'
+                                }`}>
+                                  {isIntake ? 'INTAKE' : 'EXHAUST'}
                                 </span>
                               )}
-                            </span>
+                            </div>
 
+                            {/* Power Toggle Button */}
                             <button
                               type="button"
                               onClick={() => onToggleSlotOccupied(slot.id)}
-                              className={`p-1 rounded text-xs transition-colors ${
+                              className={`p-1 border transition-colors btn-tactile ${
                                 slot.isOccupied
-                                  ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-800'
-                                  : 'text-slate-400 bg-slate-800 hover:text-slate-200'
+                                  ? 'bg-[#00f0ff] text-black border-[#00f0ff]'
+                                  : 'bg-zinc-900 border-zinc-700 text-zinc-500 hover:text-zinc-300'
                               }`}
-                              title={slot.isOccupied ? 'Uninstall fan from slot' : 'Install fan in slot'}
+                              title={slot.isOccupied ? 'Unmount Fan' : 'Mount Fan'}
                             >
                               <Power className="w-3 h-3" />
                             </button>
                           </div>
 
-                          {slot.isOccupied ? (
+                          {slot.isOccupied && (
                             <div className="space-y-2">
-                              {/* Fan Model Selector */}
-                              <div>
-                                <select
-                                  value={slot.fanId || ''}
-                                  onChange={(e) => {
-                                    const found = fans.find((f) => f.id === e.target.value);
-                                    if (found) onSetSlotFan(slot.id, found);
+                              {/* Direction Rocker Toggle */}
+                              <div className="grid grid-cols-2 gap-1 text-[10px] font-mono">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (!isIntake) onToggleSlotDirection(slot.id);
                                   }}
-                                  className="w-full bg-slate-900 border border-slate-700/80 text-slate-200 text-[10px] rounded px-1.5 py-1 outline-none truncate font-mono"
-                                >
-                                  {slot.fanId && (
-                                    <option value={slot.fanId}>
-                                      {slot.fanName || 'Installed Fan'} ({slot.maxCfm} CFM)
-                                    </option>
-                                  )}
-                                  {fans.slice(0, 40).map((f) => (
-                                    <option key={f.id} value={f.id}>
-                                      {f.name} ({f.maxCfm} CFM)
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-
-                              {/* Direction Toggle (Independent Intake vs Exhaust) */}
-                              <div className="grid grid-cols-2 gap-1 p-0.5 bg-slate-900 rounded border border-slate-800">
-                                <button
-                                  type="button"
-                                  onClick={() => onToggleSlotDirection(slot.id)}
-                                  className={`py-1 rounded text-[10px] font-mono font-bold flex items-center justify-center gap-1 transition-all ${
+                                  className={`py-1 border text-center font-bold uppercase transition-all btn-tactile ${
                                     isIntake
-                                      ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                                      : 'text-slate-400 hover:text-slate-200'
+                                      ? 'bg-[#00f0ff] text-black border-[#00f0ff]'
+                                      : 'bg-[#090b10] border-zinc-800 text-zinc-500 hover:text-zinc-300'
                                   }`}
                                 >
-                                  <Snowflake className="w-2.5 h-2.5" />
-                                  <span>IN</span>
+                                  INTAKE ➔
                                 </button>
                                 <button
                                   type="button"
-                                  onClick={() => onToggleSlotDirection(slot.id)}
-                                  className={`py-1 rounded text-[10px] font-mono font-bold flex items-center justify-center gap-1 transition-all ${
-                                    isExhaust
-                                      ? 'bg-red-500 text-white shadow-sm'
-                                      : 'text-slate-400 hover:text-slate-200'
+                                  onClick={() => {
+                                    if (isIntake) onToggleSlotDirection(slot.id);
+                                  }}
+                                  className={`py-1 border text-center font-bold uppercase transition-all btn-tactile ${
+                                    !isIntake
+                                      ? 'bg-red-500 text-black border-red-500'
+                                      : 'bg-[#090b10] border-zinc-800 text-zinc-500 hover:text-zinc-300'
                                   }`}
                                 >
-                                  <Flame className="w-2.5 h-2.5" />
-                                  <span>OUT</span>
+                                  ➔ EXHAUST
                                 </button>
                               </div>
 
-                              {/* PWM Slider (0% to 100%) */}
+                              {/* PWM Potentiometer Fader Slider */}
                               <div>
-                                <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-0.5">
-                                  <span>PWM Speed</span>
-                                  <span className="font-bold text-cyan-300">{slot.pwmPercent}%</span>
+                                <div className="flex items-center justify-between text-[10px] font-mono mb-1">
+                                  <span className="text-zinc-400">PWM DUTY:</span>
+                                  <span className="font-bold text-white">
+                                    {slot.pwmPercent}% <span className="text-zinc-400 font-normal">({slot.liveCfm} CFM)</span>
+                                  </span>
                                 </div>
                                 <input
                                   type="range"
@@ -317,61 +302,46 @@ export const GranularSlotConfigurator: React.FC<GranularSlotConfiguratorProps> =
                                   max="100"
                                   step="5"
                                   value={slot.pwmPercent}
-                                  onChange={(e) => onSetSlotPwm(slot.id, Number(e.target.value))}
-                                  className="w-full accent-cyan-400 cursor-pointer h-1 bg-slate-800 rounded"
+                                  onChange={(e) => onSetSlotPwm(slot.id, parseInt(e.target.value))}
+                                  className="fader-slider"
                                 />
+                                <div className="flex justify-between text-[8px] font-mono text-zinc-600 mt-1 select-none">
+                                  <span>0%</span>
+                                  <span>25%</span>
+                                  <span>50%</span>
+                                  <span>75%</span>
+                                  <span>100%</span>
+                                </div>
                               </div>
 
-                              {/* AIO Radiator Toggle (with 40% Static Pressure Penalty) */}
-                              <label className="flex items-center justify-between cursor-pointer pt-1 border-t border-slate-800/80">
-                                <span className="text-[10px] text-slate-300 flex items-center gap-1">
-                                  <Layers className="w-3 h-3 text-purple-400" />
-                                  Radiator
-                                </span>
-                                <input
-                                  type="checkbox"
-                                  checked={slot.hasRadiator}
-                                  onChange={() => onToggleSlotRadiator(slot.id)}
-                                  className="accent-purple-500 w-3.5 h-3.5 rounded cursor-pointer"
-                                />
-                              </label>
-
-                              {slot.hasRadiator && (
-                                <p className="text-[9px] text-purple-400 font-mono leading-tight">
-                                  -40% static pressure penalty applied
-                                </p>
-                              )}
-
-                              {/* Live CFM Output */}
-                              <div className="pt-1 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono">
-                                <span className="text-slate-400">Live Output:</span>
-                                <span className={`font-bold ${
-                                  slot.pwmPercent > 0
-                                    ? isIntake ? 'text-cyan-400' : 'text-red-400'
-                                    : 'text-slate-500'
-                                }`}>
-                                  {slot.liveCfm} CFM
-                                </span>
+                              {/* AIO Radiator Mount Toggle */}
+                              <div className="flex items-center justify-between pt-1 border-t border-zinc-800/80">
+                                <label className="text-[10px] font-mono text-zinc-400 flex items-center gap-1 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={slot.hasRadiator}
+                                    onChange={() => onToggleSlotRadiator(slot.id)}
+                                    className="accent-[#00f0ff] rounded-none"
+                                  />
+                                  <span>AIO RADIATOR</span>
+                                </label>
+                                {slot.hasRadiator && (
+                                  <span className="text-[9px] font-mono text-amber-400 bg-amber-950/40 border border-amber-800/50 px-1">
+                                    -40% CFM RESTRICTION
+                                  </span>
+                                )}
                               </div>
                             </div>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => onToggleSlotOccupied(slot.id)}
-                              className="w-full py-3 border border-dashed border-slate-800 hover:border-slate-600 rounded text-[11px] text-slate-500 hover:text-slate-300 font-mono transition-colors"
-                            >
-                              + Install Fan in Slot {slot.slotNumber}
-                            </button>
                           )}
                         </div>
                       );
-                    })}
-                  </div>
-                ) : (
-                  <div className="py-6 text-center text-slate-500 text-xs font-mono">
-                    No physical mounting slots supported on this chassis.
-                  </div>
-                )}
+                    })
+                  ) : (
+                    <div className="text-center py-4 text-[10px] font-mono text-zinc-600 border border-dashed border-zinc-800">
+                      [ NO MOUNTING CAPACITY ]
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           );

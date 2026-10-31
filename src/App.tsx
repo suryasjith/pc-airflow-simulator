@@ -10,11 +10,8 @@ import {
   Wind,
   RotateCcw,
   Sparkles,
-  Layers,
   ChevronRight,
   Info,
-  Sliders,
-  Box,
   LayoutGrid,
 } from 'lucide-react';
 
@@ -70,95 +67,108 @@ export const App: React.FC = () => {
   }, [selectedCase, selectedCooler, selectedGpu, slots, physics]);
 
   const steps = [
-    { num: 1, title: 'Case & Hardware', icon: Box },
-    { num: 2, title: 'Granular Slots & PWM', icon: Sliders },
-    { num: 3, title: 'Airflow Vectors', icon: Wind },
-    { num: 4, title: 'Physics & Diagnostics', icon: Layers },
+    { num: 1, title: 'Case & Hardware Spec', code: 'HW_SPEC' },
+    { num: 2, title: 'Granular Slots & PWM', code: 'PWM_RACK' },
+    { num: 3, title: 'Wind-Tunnel Vectors', code: 'CFD_FLOW' },
+    { num: 4, title: 'Telemetry & Safety', code: 'AUDIT_HUD' },
   ];
 
   const activeSlotCount = Object.values(slots).filter((s) => s.isOccupied && s.pwmPercent > 0).length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-black">
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/90 px-4 md:px-8 py-3.5">
+    <div className="min-h-screen bg-[#08090d] text-zinc-100 flex flex-col selection:bg-[#00f0ff] selection:text-black">
+      {/* Top Industrial Avionics Header */}
+      <header className="sticky top-0 z-40 bg-[#08090d]/95 backdrop-blur-xs border-b border-zinc-800 px-4 md:px-6 py-2.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo & Brand */}
+          {/* Brand & System Status */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-slate-950 font-black">
-              <Wind className="w-5 h-5 text-slate-950" />
+            <div className="w-8 h-8 bg-[#00f0ff] flex items-center justify-center text-black font-mono font-black text-sm hard-shadow-sm">
+              <Wind className="w-4 h-4 stroke-[2.5]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold tracking-tight text-lg font-mono">
-                  AERO<span className="text-cyan-400">FLOW</span>
+                <span className="font-mono font-bold tracking-tight text-base text-white">
+                  AERO<span className="text-[#00f0ff]">FLOW</span>
                 </span>
-                <span className="text-[10px] font-mono uppercase bg-cyan-950 text-cyan-300 border border-cyan-800/50 px-1.5 py-0.2 rounded font-semibold">
-                  Granular PWM v2.5
+                <span className="text-[9px] font-mono uppercase bg-black text-[#00f0ff] border border-zinc-700 px-1.5 py-0.2 font-bold tracking-wider">
+                  CFD-3000 // PROD
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 font-normal hidden sm:block">
-                Precision Case Airflow Simulator & Dynamic Pressure Optimizer
+              <p className="text-[10px] text-zinc-500 font-mono hidden sm:block">
+                Precision PC Chassis Aerodynamics & Dynamic Pressure Optimizer
               </p>
             </div>
           </div>
 
+          {/* Quick Telemetry Strip in Center Header */}
+          <div className="hidden lg:flex items-center gap-3 px-3 py-1 bg-black border border-zinc-800 text-[10px] font-mono">
+            <span className="text-zinc-500">CABIN STATUS:</span>
+            <span className={physics.netCfm > 0 ? 'text-[#00f0ff] font-bold' : physics.netCfm < 0 ? 'text-red-400 font-bold' : 'text-zinc-400'}>
+              [ {physics.netCfm > 0 ? `+${physics.netCfm}` : physics.netCfm} CFM ]
+            </span>
+            <span className="text-zinc-700">|</span>
+            <span className="text-zinc-500">ACTIVE PORTS:</span>
+            <span className="text-white font-bold">{activeSlotCount}</span>
+            <span className="text-zinc-700">|</span>
+            <span className="text-zinc-500">TURNOVER:</span>
+            <span className="text-zinc-300 font-bold">{physics.airExchangesPerMinute}X / MIN</span>
+          </div>
+
           {/* Action Tools */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             {/* View Mode Toggle */}
             <button
               onClick={() => setIsProView(!isProView)}
-              className={`text-xs font-mono px-3 py-1.5 rounded-lg border flex items-center gap-1.5 transition-colors ${
+              className={`text-xs font-mono px-3 py-1.5 border flex items-center gap-1.5 btn-tactile ${
                 isProView
-                  ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-300'
-                  : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+                  ? 'bg-[#00f0ff] text-black font-bold border-[#00f0ff]'
+                  : 'bg-[#10121a] border-zinc-700 text-zinc-300 hover:border-zinc-500'
               }`}
-              title="Toggle between Paced Guided Stepper and Pro Dashboard View"
+              title="Toggle between Paced Guided Lab and Unified Workbench Matrix"
             >
               <LayoutGrid className="w-3.5 h-3.5" />
-              <span>{isProView ? 'Pro All-In-One' : 'Guided Workflow'}</span>
+              <span>{isProView ? 'WORKBENCH MATRIX' : 'PACED LAB TOUR'}</span>
             </button>
 
             {/* Presets Modal Button */}
             <button
               onClick={() => setIsPresetsOpen(true)}
-              className="text-xs font-mono px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-950/40 hover:bg-purple-900/40 text-purple-300 flex items-center gap-1.5 transition-colors"
+              className="text-xs font-mono px-3 py-1.5 border border-purple-500/50 bg-[#160c24] hover:bg-purple-900/30 text-purple-300 flex items-center gap-1.5 btn-tactile"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Case Studies</span>
+              <span className="hidden sm:inline">CASE STUDIES</span>
             </button>
 
             {/* Blank Slate Reset */}
             <button
               onClick={resetToBlankSlate}
-              className="text-xs font-mono px-3 py-1.5 rounded-lg border border-slate-800 hover:border-red-900/60 bg-slate-900 hover:bg-red-950/30 text-slate-400 hover:text-red-300 flex items-center gap-1.5 transition-colors"
+              className="text-xs font-mono px-2.5 py-1.5 border border-zinc-700 hover:border-red-500 bg-[#10121a] hover:bg-red-950/40 text-zinc-400 hover:text-red-300 flex items-center gap-1.5 btn-tactile"
               title="Reset everything to completely blank state"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Reset Slate</span>
+              <span className="hidden md:inline">RESET SLATE</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-8 space-y-6">
-        {/* Paced Guided Stepper (Enabled when not in Pro View) */}
+      <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 space-y-5">
+        {/* Paced Guided Lab Stepper (Enabled when not in Pro View) */}
         {!isProView && (
-          <div className="bg-slate-900/60 border border-slate-800/90 rounded-2xl p-4 shadow-xl">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
-              <span className="text-xs font-mono font-medium text-slate-400 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                PACED BUILD PROCESS (STEP {activeStep} OF 4)
+          <div className="bg-[#0b0d13] border border-zinc-800 p-3.5 hard-shadow">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-zinc-800">
+              <span className="text-[11px] font-mono font-bold text-zinc-300 flex items-center gap-1.5 uppercase">
+                <span className="w-1.5 h-1.5 bg-[#00f0ff]" />
+                PACED BUILD LAB // STATION [0{activeStep} / 04]
               </span>
-              <span className="text-[11px] text-slate-400">
-                Paced progression designed to prevent cognitive overload.
+              <span className="text-[10px] font-mono text-zinc-500">
+                STAGED CALIBRATION TO PREVENT COGNITIVE OVERLOAD
               </span>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               {steps.map((s) => {
-                const IconComponent = s.icon;
                 const isActive = activeStep === s.num;
                 const isCompleted = activeStep > s.num;
 
@@ -166,31 +176,31 @@ export const App: React.FC = () => {
                   <button
                     key={s.num}
                     onClick={() => setActiveStep(s.num)}
-                    className={`p-3 rounded-xl border text-left flex items-center gap-3 transition-all ${
+                    className={`p-2.5 border text-left flex items-center gap-2.5 transition-all btn-tactile ${
                       isActive
-                        ? 'bg-cyan-950/60 border-cyan-500/60 text-cyan-300 shadow-md shadow-cyan-950/40'
+                        ? 'bg-[#00f0ff]/10 border-[#00f0ff] text-white hard-shadow-cyan'
                         : isCompleted
-                        ? 'bg-slate-950/70 border-slate-700/80 text-slate-200 hover:border-slate-600'
-                        : 'bg-slate-950/30 border-slate-800/60 text-slate-400 hover:text-slate-300 hover:border-slate-700'
+                        ? 'bg-[#0f1418] border-zinc-700 text-zinc-300'
+                        : 'bg-black border-zinc-800/80 text-zinc-500 hover:border-zinc-700'
                     }`}
                   >
                     <div
-                      className={`w-7 h-7 rounded-lg flex items-center justify-center font-mono text-xs font-bold ${
+                      className={`w-6 h-6 flex items-center justify-center font-mono text-[11px] font-bold border ${
                         isActive
-                          ? 'bg-cyan-500 text-slate-950'
+                          ? 'bg-[#00f0ff] text-black border-[#00f0ff]'
                           : isCompleted
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                          : 'bg-slate-800 text-slate-400'
+                          ? 'bg-[#00ff9d]/20 text-[#00ff9d] border-[#00ff9d]/50'
+                          : 'bg-zinc-800 border-zinc-700 text-zinc-400'
                       }`}
                     >
-                      {isCompleted ? '✓' : <IconComponent className="w-3.5 h-3.5" />}
+                      {isCompleted ? '✓' : `0${s.num}`}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold truncate">{s.title}</p>
-                      <p className="text-[10px] text-slate-400">
-                        {s.num === 1 && (selectedCase ? selectedCase.name.slice(0, 15) : 'Empty')}
-                        {s.num === 2 && `${activeSlotCount} Active Slots`}
-                        {s.num === 3 && 'Kinematics'}
+                      <p className="text-xs font-mono font-bold truncate uppercase">{s.title}</p>
+                      <p className="text-[10px] font-mono text-zinc-500">
+                        {s.num === 1 && (selectedCase ? selectedCase.name.slice(0, 15) : '[ EMPTY ]')}
+                        {s.num === 2 && `${activeSlotCount} SLOTS ARMED`}
+                        {s.num === 3 && 'STREAMLINES'}
                         {s.num === 4 && `${physics.netCfm > 0 ? `+${physics.netCfm}` : physics.netCfm} CFM`}
                       </p>
                     </div>
@@ -201,11 +211,11 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* GUIDED STEPPER CONTENT OR PRO VIEW */}
+        {/* GUIDED STEPPER CONTENT OR WORKBENCH MATRIX */}
         {isProView ? (
-          /* PRO VIEW: Expansive all-in-one matrix */
-          <div className="space-y-6">
-            {/* Row 1: Hardware Component Matrix */}
+          /* WORKBENCH MATRIX: Unified industrial engineering view */
+          <div className="space-y-5">
+            {/* Row 1: Hardware Component Rack */}
             <ComponentSelector
               cases={cases}
               cpuCoolers={cpuCoolers}
@@ -222,8 +232,8 @@ export const App: React.FC = () => {
               onSelectDefaultFan={selectDefaultFan}
             />
 
-            {/* Row 2: Chassis Cross-Section Visualizer + Pressure Gauge */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Row 2: Wind Tunnel & Telemetry HUD */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
               <div className="lg:col-span-7">
                 <ChassisVisualizer
                   selectedCase={selectedCase}
@@ -235,7 +245,7 @@ export const App: React.FC = () => {
                 />
               </div>
 
-              <div className="lg:col-span-5 space-y-6">
+              <div className="lg:col-span-5 space-y-5">
                 <PressureGauge physics={physics} />
                 <DiagnosticsPanel
                   diagnostics={diagnostics}
@@ -244,7 +254,7 @@ export const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Row 3: Granular Slot & PWM Matrix */}
+            {/* Row 3: Granular Fan Slots & PWM Console */}
             <GranularSlotConfigurator
               selectedCase={selectedCase}
               cpuCooler={selectedCooler}
@@ -262,10 +272,10 @@ export const App: React.FC = () => {
             />
           </div>
         ) : (
-          /* GUIDED STEPPER VIEW (Paced for beginners) */
-          <div className="space-y-6">
+          /* PACED LAB TOUR (Step-by-step for beginners) */
+          <div className="space-y-5">
             {activeStep === 1 && (
-              <div className="space-y-6 animate-in fade-in duration-300">
+              <div className="space-y-4 animate-in fade-in duration-200">
                 <ComponentSelector
                   cases={cases}
                   cpuCoolers={cpuCoolers}
@@ -282,21 +292,21 @@ export const App: React.FC = () => {
                   onSelectDefaultFan={selectDefaultFan}
                 />
 
-                <div className="flex items-center justify-between bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                  <div className="flex items-center gap-2 text-xs text-slate-300">
-                    <Info className="w-4 h-4 text-cyan-400" />
+                <div className="flex items-center justify-between bg-[#0b0d13] p-3.5 border border-zinc-800 hard-shadow-sm font-mono text-xs">
+                  <div className="flex items-center gap-2 text-zinc-400">
+                    <Info className="w-4 h-4 text-[#00f0ff]" />
                     <span>
                       {selectedCase
-                        ? `Selected ${selectedCase.name}. Ready to configure granular fan slots.`
-                        : 'Search and select a PC chassis to unlock discrete mounting slots.'}
+                        ? `MOUNTED: ${selectedCase.name}. READY FOR FAN SLOT CONFIGURATION.`
+                        : 'SELECT A PC CHASSIS IN BAY 01 TO INITIALIZE MOUNTING CAPACITIES.'}
                     </span>
                   </div>
 
                   <button
                     onClick={() => setActiveStep(2)}
-                    className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs font-mono rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-2 bg-[#00f0ff] hover:bg-[#00f0ff]/90 text-black font-bold uppercase flex items-center gap-1.5 transition-colors btn-tactile border border-[#00f0ff]"
                   >
-                    <span>Proceed to Granular Slots</span>
+                    <span>GO TO SLOTS & PWM</span>
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -304,7 +314,7 @@ export const App: React.FC = () => {
             )}
 
             {activeStep === 2 && (
-              <div className="space-y-6 animate-in fade-in duration-300">
+              <div className="space-y-4 animate-in fade-in duration-200">
                 <GranularSlotConfigurator
                   selectedCase={selectedCase}
                   cpuCooler={selectedCooler}
@@ -321,19 +331,19 @@ export const App: React.FC = () => {
                   onApplyDefaultFanToPanel={applyDefaultFanToPanel}
                 />
 
-                <div className="flex items-center justify-between bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <div className="flex items-center justify-between bg-[#0b0d13] p-3.5 border border-zinc-800 hard-shadow-sm font-mono text-xs">
                   <button
                     onClick={() => setActiveStep(1)}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono rounded-lg transition-colors"
+                    className="px-4 py-2 bg-black hover:bg-zinc-900 border border-zinc-700 text-zinc-300 uppercase transition-colors btn-tactile"
                   >
-                    &larr; Back to Hardware
+                    &larr; BACK TO HARDWARE
                   </button>
 
                   <button
                     onClick={() => setActiveStep(3)}
-                    className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs font-mono rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-2 bg-[#00f0ff] hover:bg-[#00f0ff]/90 text-black font-bold uppercase flex items-center gap-1.5 transition-colors btn-tactile border border-[#00f0ff]"
                   >
-                    <span>View Streamline Vectors</span>
+                    <span>VIEW WIND-TUNNEL VECTORS</span>
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -341,8 +351,8 @@ export const App: React.FC = () => {
             )}
 
             {activeStep === 3 && (
-              <div className="space-y-6 animate-in fade-in duration-300">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <div className="space-y-4 animate-in fade-in duration-200">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
                   <div className="lg:col-span-8">
                     <ChassisVisualizer
                       selectedCase={selectedCase}
@@ -358,19 +368,19 @@ export const App: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <div className="flex items-center justify-between bg-[#0b0d13] p-3.5 border border-zinc-800 hard-shadow-sm font-mono text-xs">
                   <button
                     onClick={() => setActiveStep(2)}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono rounded-lg transition-colors"
+                    className="px-4 py-2 bg-black hover:bg-zinc-900 border border-zinc-700 text-zinc-300 uppercase transition-colors btn-tactile"
                   >
-                    &larr; Back to Slots
+                    &larr; BACK TO SLOTS
                   </button>
 
                   <button
                     onClick={() => setActiveStep(4)}
-                    className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs font-mono rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-2 bg-[#00f0ff] hover:bg-[#00f0ff]/90 text-black font-bold uppercase flex items-center gap-1.5 transition-colors btn-tactile border border-[#00f0ff]"
                   >
-                    <span>Inspect Diagnostics & Warnings</span>
+                    <span>INSPECT DIAGNOSTICS & SAFETY</span>
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -378,8 +388,8 @@ export const App: React.FC = () => {
             )}
 
             {activeStep === 4 && (
-              <div className="space-y-6 animate-in fade-in duration-300">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <div className="space-y-4 animate-in fade-in duration-200">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
                   <div className="lg:col-span-6">
                     <PressureGauge physics={physics} />
                   </div>
@@ -391,19 +401,19 @@ export const App: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <div className="flex items-center justify-between bg-[#0b0d13] p-3.5 border border-zinc-800 hard-shadow-sm font-mono text-xs">
                   <button
                     onClick={() => setActiveStep(3)}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono rounded-lg transition-colors"
+                    className="px-4 py-2 bg-black hover:bg-zinc-900 border border-zinc-700 text-zinc-300 uppercase transition-colors btn-tactile"
                   >
-                    &larr; Back to Visualizer
+                    &larr; BACK TO WIND-TUNNEL
                   </button>
 
                   <button
                     onClick={() => setIsProView(true)}
-                    className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs font-mono rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold uppercase flex items-center gap-1.5 transition-colors btn-tactile border border-purple-500"
                   >
-                    <span>Switch to All-In-One Pro Dashboard</span>
+                    <span>OPEN ALL-IN-ONE WORKBENCH MATRIX</span>
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -421,9 +431,23 @@ export const App: React.FC = () => {
         onResetBlankSlate={resetToBlankSlate}
       />
 
-      {/* Footer */}
-      <footer className="mt-auto border-t border-slate-800/80 bg-slate-950/80 py-4 px-6 text-center text-xs text-slate-400 font-mono">
-        <p>AeroFlow Engine &bull; PC Airflow Simulation & Dynamic Pressure Optimizer &bull; Granular Slot PWM Controls</p>
+      {/* Industrial Engineering Footer */}
+      <footer className="mt-auto border-t border-zinc-800 bg-black/90 py-3 px-6 text-center text-[11px] text-zinc-500 font-mono flex flex-wrap items-center justify-between">
+        <div>
+          <span>AEROFLOW CFD ENGINE // VERIFIED WITH </span>
+          <a
+            href="https://github.com/docyx/pc-part-dataset"
+            target="_blank"
+            rel="noreferrer"
+            className="text-zinc-400 hover:text-[#00f0ff] underline"
+          >
+            docyx/pc-part-dataset
+          </a>
+          <span> (18,800+ PARTS)</span>
+        </div>
+        <div>
+          <span>CALIBRATION: EMPIRICAL AIRFLOW DYNAMICS // 60 FPS KINEMATICS</span>
+        </div>
       </footer>
     </div>
   );

@@ -6,13 +6,16 @@
   }
   
   body {
-    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-    background-color: #030712;
-    color: #f3f4f6;
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    background-color: #08090d;
+    color: #e4e4e7;
     background-image: 
-      radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.08) 0%, transparent 60%),
-      radial-gradient(circle at 100% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(239, 68, 68, 0.04) 0%, transparent 50%);
+      /* SVG Fractal Noise Layer to eliminate plastic flat AI look */
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E"),
+      /* Precision Engineering CAD Blueprint Grid */
+      linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: auto, 24px 24px, 24px 24px;
     background-attachment: fixed;
     min-height: 100vh;
   }
@@ -22,103 +25,123 @@
   }
 }
 
-/* Custom scrollbars */
+/* Industrial Technical Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #090a0f;
+  border-left: 1px solid #181920;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #27272a;
+  border-radius: 0px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #3f3f46;
 }
 
-/* Futuristic Grid Background Pattern */
-.bg-tech-grid {
-  background-size: 30px 30px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+/* Hard Structural Shadows & Mechanical Elevation */
+.hard-shadow {
+  box-shadow: 3px 3px 0px #000000;
+}
+.hard-shadow-sm {
+  box-shadow: 2px 2px 0px #000000;
+}
+.hard-shadow-cyan {
+  box-shadow: 3px 3px 0px rgba(0, 240, 255, 0.4);
+}
+.hard-shadow-red {
+  box-shadow: 3px 3px 0px rgba(239, 68, 68, 0.4);
 }
 
-/* Glowing Animations */
-@keyframes pulse-cyan {
-  0%, 100% {
-    box-shadow: 0 0 15px -2px rgba(6, 182, 212, 0.35);
-  }
-  50% {
-    box-shadow: 0 0 25px 3px rgba(6, 182, 212, 0.65);
-  }
+/* Tactile Mechanical Press State */
+.btn-tactile {
+  transition: transform 75ms ease-out, box-shadow 75ms ease-out;
+}
+.btn-tactile:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #000000 !important;
 }
 
-@keyframes pulse-red {
-  0%, 100% {
-    box-shadow: 0 0 15px -2px rgba(239, 68, 68, 0.35);
-  }
-  50% {
-    box-shadow: 0 0 25px 3px rgba(239, 68, 68, 0.65);
-  }
+/* Engineering Hazard Warning Stripes */
+.hazard-stripe {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(239, 68, 68, 0.12),
+    rgba(239, 68, 68, 0.12) 8px,
+    rgba(0, 0, 0, 0.25) 8px,
+    rgba(0, 0, 0, 0.25) 16px
+  );
 }
 
-@keyframes subtle-float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
+.hazard-stripe-amber {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(245, 158, 11, 0.12),
+    rgba(245, 158, 11, 0.12) 8px,
+    rgba(0, 0, 0, 0.25) 8px,
+    rgba(0, 0, 0, 0.25) 16px
+  );
 }
 
-.glow-cyan {
-  animation: pulse-cyan 3s infinite;
-}
-
-.glow-red {
-  animation: pulse-red 3s infinite;
-}
-
-.float-slow {
-  animation: subtle-float 6s ease-in-out infinite;
-}
-
-/* Custom Range Input */
-input[type="range"] {
+/* Mechanical Potentiometer / Fader PWM Slider */
+input[type="range"].fader-slider {
   -webkit-appearance: none;
   appearance: none;
-  background: #1e293b;
-  border-radius: 9999px;
+  width: 100%;
+  height: 6px;
+  background: #14151b;
+  border: 1px solid #27272a;
+  border-radius: 0px;
   outline: none;
+  cursor: pointer;
 }
 
-input[type="range"]::-webkit-slider-thumb {
+input[type="range"].fader-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #38bdf8;
-  cursor: pointer;
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
-  transition: transform 0.15s ease, background-color 0.15s ease;
+  width: 16px;
+  height: 22px;
+  background: #d4d4d8;
+  border: 1px solid #71717a;
+  border-radius: 1px;
+  cursor: ew-resize;
+  box-shadow: 1px 1px 0px #000, inset 0 1px 0 #fff;
+  background-image: linear-gradient(to bottom, #f4f4f5 0%, #a1a1aa 100%);
+  position: relative;
 }
 
-input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-  background: #7dd3fc;
+input[type="range"].fader-slider::-webkit-slider-thumb:hover {
+  background: #ffffff;
+  border-color: #00f0ff;
+  box-shadow: 2px 2px 0px #000, 0 0 6px rgba(0, 240, 255, 0.4);
 }
 
-input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #38bdf8;
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+input[type="range"].fader-slider::-moz-range-thumb {
+  width: 16px;
+  height: 22px;
+  background: #d4d4d8;
+  border: 1px solid #71717a;
+  border-radius: 1px;
+  cursor: ew-resize;
+  box-shadow: 1px 1px 0px #000;
+}
+
+/* CAD Crosshair Cursor & Blueprint Elements */
+.cad-grid {
+  background-image: 
+    radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* CRT / Vector Scanline Texture */
+.scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.35) 50%
+  );
+  background-size: 100% 3px;
+  pointer-events: none;
 }
