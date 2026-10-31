@@ -70,7 +70,9 @@ async function fetchFromNetwork<T>(fileName: string): Promise<T[]> {
     : fileName === 'video-card.json' ? 'video-cards.json'
     : 'case-fans.json';
 
-  const localRes = await fetch(`/data/${localFileName}`);
+  const base = import.meta.env.BASE_URL || './';
+  const cleanBase = base.endsWith('/') ? base : `${base}/`;
+  const localRes = await fetch(`${cleanBase}data/${localFileName}`);
   if (!localRes.ok) {
     throw new Error(`Failed to load ${fileName} from both GitHub and local mirror`);
   }
