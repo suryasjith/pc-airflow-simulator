@@ -24,41 +24,48 @@ Fetched directly from [`docyx/pc-part-dataset`](https://github.com/docyx/pc-part
 - **2,744 Case Fans (`case-fans.json`):** 120mm & 140mm industry standard models with calibrated CFM ratings, static pressure ($mm\ H_2O$), noise levels ($dBA$), and max RPM.
 - **Searchable Combobox Component (`SearchablePartPicker`):** Sub-millisecond instant search across 6,000+ items with category filtering (e.g. Mesh Front, Glass Panel, Liquid AIO, Air Tower, RTX 40/50, High CFM).
 
-### 3. Airflow Mapping & Interactive Simulation
+### 3. Granular Fan Slots, Side Mounts & Advanced Per-Slot Controls
+- **5-Panel Architecture:** Explicit support for **Front, Top, Rear, Bottom, and Side** mounts (including dual-chamber chassis like Lian Li O11 Dynamic, NZXT H9, Phanteks NV7).
+- **Discrete Individual Slots:** Dynamically generates individual, discrete fan slots (e.g. three separate 120mm slots on a side panel) rather than grouped panel controls.
+- **Independent Per-Slot Controls:**
+  - Independent **Intake** vs. **Exhaust** directional toggle per slot.
+  - Granular **PWM slider** ($0\%\text{--}100\%$) for fine-tuned fan speed curves.
+  - Live per-slot CFM readout dynamically calculated from maximum fan CFM rating and PWM percentage.
+  - Per-slot AIO radiator attachment toggle.
+
+### 4. Aerodynamic & Thermodynamic Physics Engine with Static Pressure
+- **Live Fan Slot CFM Formula:**
+  $$\text{Live Slot CFM} = \text{maxCFM} \times \left(\frac{\text{PWM \%}}{100}\right) \times (1 - 0.40 \text{ if radiator mounted})$$
+  - **Static Pressure Impedance:** Automatically penalizes fan airflow by $-40\%$ when mounted against an AIO radiator, matching real-world bench measurements for dense cooling fins ($18\text{--}22\text{ FPI}$).
+  - Additional panel flow restriction modeling: Mesh vs. Perforated vs. Solid Glass side venting.
+- **Pressure Differential ($\Delta CFM$):**
+  $$\Delta CFM = \sum CFM_{\text{intake}} - \sum CFM_{\text{exhaust}}$$
+  - **Optimal Positive Equilibrium ($1.05\text{--}1.65\times$):** The gold standard for PC building. Maintains positive cabin pressure to repel dust through unsealed chassis seams while exhausting heat efficiently.
+  - **Strong Positive ($> 1.65\times$):** High dust rejection; prompts check for adequate exhaust velocity.
+  - **Neutral ($0.95\text{--}1.05\times$):** Equal intake and exhaust balance.
+  - **Slight Negative ($0.75\text{--}0.95\times$):** Minor dust ingress.
+  - **Extreme Negative Pressure / Critical Vacuum ($< 0.75\times$ or $\Delta CFM < -35$):** Heavy negative pressure that draws unfiltered ambient dust through seams and starved heatsinks.
+- **Air Turnover Rate:** Case volume refresh cycle frequency (e.g. $40\times\text{--}120\times$ per minute).
+- **Estimated Component $\Delta T$:** Real-time thermal rise above room ambient for both CPU and GPU based on active CFM and thermal dissipation (TDP).
+
+### 5. Smart Diagnostic & Conflict Auditor HUD
+- **Short-Looping Detection:** Instantly detects and warns if adjacent fan slots on the exact same panel (e.g., Top 1 Intake and Top 2 Exhaust) oppose each other, preventing internal recirculation loops.
+- **GPU Starvation Warning:** Alerts when a Front or Side mount holding an AIO radiator is set to Intake, pre-heating incoming air up to $\sim 45^\circ\text{C}$ before it reaches an open-air GPU.
+- **Extreme Negative Pressure Alert:** Fires whenever total exhaust drastically outpaces intake, flagging severe dust ingress risks.
+- **All-Exhaust / All-Intake Warnings:** Flags missing intake corridors or trapped internal thermal pockets.
+- **Interactive 1-Click Quick-Fix Buttons:** Automated resolutions (e.g., "Synchronize Panel Direction", "Move Radiator to Top Exhaust", "Adjust Intake PWM").
+
+### 6. Interactive Visualizer & Airflow Simulation
 - **Chassis Cross-Section Diagram:**
-  - Interactive mounts for **Front, Top, Rear, Bottom**.
+  - Interactive mounts for **Front, Side, Top, Rear, and Bottom**.
   - Direct 1-click toggles right on the visualizer for **Intake** (Cold Blue/Cyan arrows $\rightarrow / \downarrow$) vs **Exhaust** (Hot Red/Amber arrows $\leftarrow / \uparrow$).
   - Animated fan blades, motherboard VRM, CPU socket / cooler, GPU backplate and axial fans, and PSU tunnel.
-- **Dynamic HTML5 Canvas Particle Kinematics:**
-  - Cool cyan particles emit from active intake mounts based on fan RPM.
+- **Dynamic HTML5 Canvas Particle Kinematics (60 FPS):**
+  - Cool cyan particles emit from active intake mounts proportional to fan PWM.
   - Particles drift across components; as they pass heatsinks, they absorb heat and transition from cyan $\rightarrow$ amber $\rightarrow$ crimson.
   - Exhaust fans pull air outwards into focused exhaust cones.
   - **Dust Ingress Simulation:** Under strong negative pressure, gray dust specks seep inward through unsealed rear PCIe slots and case joints.
-  - **Turbulence Vortex Simulation:** If top intake fans clash with rear exhaust, particles swirl in an eddy vortex directly over the motherboard.
-
-### 4. Aerodynamic & Thermodynamic Physics Engine
-- **Effective CFM Formula:**
-  $$\text{Effective CFM} = \sum (\text{Fan CFM} \times \text{Count} \times \frac{\text{RPM \%}}{100} \times \text{Restriction Multipliers})$$
-  - Radiator Fin Impedance: $\sim 28\text{--}32\%$ flow reduction (mitigated by high fan static pressure).
-  - Dust Filter Restriction: $\sim 14\%$ flow reduction.
-  - Front Panel Impedance: Mesh ($5\%$ loss) vs Perforated ($12\%$ loss) vs Solid Glass side vents ($28\%$ loss).
-- **Pressure Differential ($\Delta CFM$):**
-  $$\Delta CFM = CFM_{\text{intake}} - CFM_{\text{exhaust}}$$
-  - **Optimal Slight Positive ($1.05\text{--}1.50\times$):** The gold standard for PC building. Air gently vents through unsealed cracks, actively repelling dust while maintaining laminar through-flow.
-  - **Strong Positive ($> 1.50\times$):** High dust rejection, potential heat pooling if exhaust velocity is insufficient.
-  - **Neutral ($0.95\text{--}1.05\times$):** Equal intake and exhaust.
-  - **Slight Negative ($0.75\text{--}0.95\times$):** Minor dust ingress.
-  - **Strong Negative / Critical Vacuum ($< 0.75\times$):** Unsealed seams act like a vacuum cleaner, sucking ambient room dust directly onto circuit boards.
-- **Air Turnover Rate:** Case volume refresh rate (e.g. $40\times\text{--}120\times$ per minute).
-- **Estimated Component $\Delta T$:** Real-time thermal estimation above room ambient for both CPU and GPU.
-
-### 5. Smart Diagnostic & Conflict Auditor
-- **Front Radiator GPU Pre-Heat Conflict:** Alerts when a front intake AIO radiator dumps warm $\sim 45^\circ\text{C}$ CPU exhaust air straight into the intake of an open-air GPU heatsink.
-- **All-Exhaust Case Starvation:** Warns of negative pressure vacuum and air starvation.
-- **All-Intake Trapped Heat:** Warns of lack of directional exhaust corridors.
-- **Top Intake Opposing Rear Exhaust:** Warns of airflow clashes fighting natural thermal convection.
-- **High-TDP GPU Starvation:** Alerts when a $>280\text{W}$ GPU lacks direct bottom or front intake air.
-- **Interactive 1-Click Quick-Fix Buttons:** Instant resolution (e.g., "Move Radiator to Top Exhaust", "Flip Front Fans to Intake", "Add Bottom Intake Fans for GPU", "Cap Fan Count").
+  - **Short-Looping / Turbulence Vortex Simulation:** Opposing fans or clashing streams generate dynamic swirling eddy vortices.
 
 ---
 
