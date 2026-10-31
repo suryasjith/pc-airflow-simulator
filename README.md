@@ -1,5 +1,10 @@
 # AeroFlow - PC Case Airflow Simulator & Pressure Optimizer
 
+[![Live Web App](https://img.shields.io/badge/Live%20Demo-Online-success?style=for-the-badge&logo=google-chrome&logoColor=white)](https://suryasjith.github.io/pc-airflow-simulator/)
+[![Build Status](https://img.shields.io/badge/Tests-31%20Passed-brightgreen?style=for-the-badge)](https://suryasjith.github.io/pc-airflow-simulator/)
+
+🌐 **Live Web Application:** [https://suryasjith.github.io/pc-airflow-simulator/](https://suryasjith.github.io/pc-airflow-simulator/)
+
 A modern, minimalist dark-mode React application engineered to simulate desktop PC chassis aerodynamics, compute internal static air pressure differential ($\Delta CFM$), and diagnose critical thermal and airflow conflicts in real time using the **comprehensive real-world PC component database from `docyx/pc-part-dataset`**.
 
 ---
